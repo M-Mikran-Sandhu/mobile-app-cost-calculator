@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App Cost Calculator | Alpha Solutions Services LLC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066FF;
+            --primary-dark: #0052CC;
+            --secondary: #00D9FF;
+            --accent: #FF3D71;
+            --dark: #0A0E27;
+            --dark-alt: #151B3D;
+            --gray: #64748B;
+            --light: #F8FAFC;
+            --white: #FFFFFF;
+            --gradient-1: linear-gradient(135deg, #0066FF 0%, #00D9FF 100%);
+            --gradient-2: linear-gradient(135deg, #FF3D71 0%, #FF8A00 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 102, 255, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 102, 255, 0.12);
+            --shadow-lg: 0 8px 32px rgba(0, 102, 255, 0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 102, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 102, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .gradient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: -150px;
+            left: -100px;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .company-name {
+            font-size: 0.875rem;
+            color: var(--gray);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 2rem 0 1rem;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Grid */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Calculator Form */
+        .calculator-section {
+            background: var(--dark-alt);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid rgba(0, 102, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .option-card {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card input[type="radio"],
+        .option-card input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .option-label {
+            display: block;
+            padding: 1.25rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-label:hover {
+            background: rgba(0, 102, 255, 0.05);
+            border-color: rgba(0, 102, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .option-card input:checked + .option-label {
+            background: var(--gradient-1);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3);
+        }
+
+        .option-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .option-price {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .option-card input:checked + .option-label .option-price {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Slider */
+        .slider-container {
+            margin-top: 1rem;
+        }
+
+        .slider-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .slider-current {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+        }
+
+        /* Results Panel */
+        .results-panel {
+            position: sticky;
+            top: 2rem;
+            background: var(--dark-alt);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid rgba(0, 102, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+
+        .total-cost {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.4); }
+            50% { box-shadow: 0 0 0 20px rgba(0, 102, 255, 0); }
+        }
+
+        .total-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+            line-height: 1;
+        }
+
+        .total-range {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .cost-breakdown {
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-name {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .breakdown-cost {
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--gradient-2);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 24px rgba(255, 61, 113, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 61, 113, 0.4);
+        }
+
+        .disclaimer {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-panel {
+                position: relative;
+                top: 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .total-amount {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .calculator-section,
+            .results-panel {
+                padding: 1.5rem;
+            }
+
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="logo">ALPHA SOLUTIONS</div>
+            <div class="company-name">Services LLC</div>
+            <h1>Mobile App Cost Calculator</h1>
+            <p class="subtitle">Get an instant estimate for your mobile app development project</p>
+        </header>
+
+        <div class="calculator-grid">
+            <div class="calculator-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📱</span>
+                    Configure Your App
+                </h2>
+
+                <form id="calculatorForm">
+                    <!-- Development Framework -->
+                    <div class="form-group">
+                        <label class="form-label">Development Framework</label>
+                        <div class="option-grid">
+                            <div class="option-card">
+                                <input type="radio" name="framework" id="react-native" value="react-native" data-cost="1499" checked>
+                                <label for="react-native" class="option-label">
+                                    <span class="option-name">React Native</span>
+                                    <span class="option-price">From $1,499</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="radio" name="framework" id="flutter" value="flutter" data-cost="1499">
+                                <label for="flutter" class="option-label">
+                                    <span class="option-name">Flutter</span>
+                                    <span class="option-price">From $1,499</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="radio" name="framework" id="native" value="native" data-cost="2499">
+                                <label for="native" class="option-label">
+                                    <span class="option-name">Native iOS/Android</span>
+                                    <span class="option-price">From $2,499</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Platform -->
+                    <div class="form-group">
+                        <label class="form-label">Target Platform</label>
+                        <div class="option-grid">
+                            <div class="option-card">
+                                <input type="radio" name="platform" id="ios" value="ios" data-cost="0" checked>
+                                <label for="ios" class="option-label">
+                                    <span class="option-name">iOS Only</span>
+                                    <span class="option-price">Included</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="radio" name="platform" id="android" value="android" data-cost="0">
+                                <label for="android" class="option-label">
+                                    <span class="option-name">Android Only</span>
+                                    <span class="option-price">Included</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="radio" name="platform" id="both" value="both" data-cost="500">
+                                <label for="both" class="option-label">
+                                    <span class="option-name">iOS & Android</span>
+                                    <span class="option-price">+$500</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App Store Deployment -->
+                    <div class="form-group">
+                        <label class="form-label">App Store Deployment</label>
+                        <div class="option-grid">
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="app-store" value="app-store" data-cost="299">
+                                <label for="app-store" class="option-label">
+                                    <span class="option-name">App Store Ready</span>
+                                    <span class="option-price">+$299</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="play-store" value="play-store" data-cost="199">
+                                <label for="play-store" class="option-label">
+                                    <span class="option-name">Play Store Ready</span>
+                                    <span class="option-price">+$199</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add-ons: Features -->
+                    <div class="form-group">
+                        <label class="form-label">Feature Add-ons</label>
+                        <div class="option-grid">
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="auth" value="auth" data-cost="399">
+                                <label for="auth" class="option-label">
+                                    <span class="option-name">User Authentication</span>
+                                    <span class="option-price">+$399</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="payment" value="payment" data-cost="599">
+                                <label for="payment" class="option-label">
+                                    <span class="option-name">Payment Gateway</span>
+                                    <span class="option-price">+$599</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="push" value="push" data-cost="249">
+                                <label for="push" class="option-label">
+                                    <span class="option-name">Push Notifications</span>
+                                    <span class="option-price">+$249</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="geolocation" value="geolocation" data-cost="349">
+                                <label for="geolocation" class="option-label">
+                                    <span class="option-name">GPS/Geolocation</span>
+                                    <span class="option-price">+$349</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="camera" value="camera" data-cost="299">
+                                <label for="camera" class="option-label">
+                                    <span class="option-name">Camera Integration</span>
+                                    <span class="option-price">+$299</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="social" value="social" data-cost="449">
+                                <label for="social" class="option-label">
+                                    <span class="option-name">Social Media Login</span>
+                                    <span class="option-price">+$449</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="realtime" value="realtime" data-cost="699">
+                                <label for="realtime" class="option-label">
+                                    <span class="option-name">Real-time Chat</span>
+                                    <span class="option-price">+$699</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="analytics" value="analytics" data-cost="299">
+                                <label for="analytics" class="option-label">
+                                    <span class="option-name">Analytics Dashboard</span>
+                                    <span class="option-price">+$299</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add-ons: Backend & Database -->
+                    <div class="form-group">
+                        <label class="form-label">Backend & Database</label>
+                        <div class="option-grid">
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="firebase" value="firebase" data-cost="499">
+                                <label for="firebase" class="option-label">
+                                    <span class="option-name">Firebase Backend</span>
+                                    <span class="option-price">+$499</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="custom-api" value="custom-api" data-cost="899">
+                                <label for="custom-api" class="option-label">
+                                    <span class="option-name">Custom REST API</span>
+                                    <span class="option-price">+$899</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="database" value="database" data-cost="399">
+                                <label for="database" class="option-label">
+                                    <span class="option-name">Database Setup</span>
+                                    <span class="option-price">+$399</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="admin-panel" value="admin-panel" data-cost="799">
+                                <label for="admin-panel" class="option-label">
+                                    <span class="option-name">Admin Panel</span>
+                                    <span class="option-price">+$799</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add-ons: Design & UI -->
+                    <div class="form-group">
+                        <label class="form-label">Design & UI Add-ons</label>
+                        <div class="option-grid">
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="ui-design" value="ui-design" data-cost="599">
+                                <label for="ui-design" class="option-label">
+                                    <span class="option-name">Custom UI Design</span>
+                                    <span class="option-price">+$599</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="animations" value="animations" data-cost="349">
+                                <label for="animations" class="option-label">
+                                    <span class="option-name">Animations & Effects</span>
+                                    <span class="option-price">+$349</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="dark-mode" value="dark-mode" data-cost="199">
+                                <label for="dark-mode" class="option-label">
+                                    <span class="option-name">Dark Mode</span>
+                                    <span class="option-price">+$199</span>
+                                </label>
+                            </div>
+                            <div class="option-card">
+                                <input type="checkbox" name="addons" id="multi-lang" value="multi-lang" data-cost="399">
+                                <label for="multi-lang" class="option-label">
+                                    <span class="option-name">Multi-language</span>
+                                    <span class="option-price">+$399</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Number of Screens -->
+                    <div class="form-group">
+                        <label class="form-label">Additional Screens</label>
+                        <div class="slider-container">
+                            <div class="slider-value">
+                                <span class="slider-current" id="screensValue">0</span>
+                                <span style="color: var(--gray); font-size: 0.9rem;">extra screens (5 included)</span>
+                            </div>
+                            <input type="range" id="screens" name="screens" min="0" max="20" value="0" step="1" data-cost-per="99">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="results-panel">
+                <div class="total-cost">
+                    <div class="total-label">Estimated Cost</div>
+                    <div class="total-amount" id="totalCost">$1,499</div>
+                    <div class="total-range" id="totalRange">$1,424 - $1,724</div>
+                </div>
+
+                <div class="cost-breakdown">
+                    <div class="breakdown-title">Cost Breakdown</div>
+                    <div id="breakdownList"></div>
+                </div>
+
+                <button class="cta-button" onclick="handleGetQuote()">Get Detailed Quote</button>
+
+                <div class="disclaimer">
+                    * This is an estimate. Final costs may vary based on specific requirements and project scope.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calculator Logic
+        const form = document.getElementById('calculatorForm');
+        const totalCostEl = document.getElementById('totalCost');
+        const totalRangeEl = document.getElementById('totalRange');
+        const breakdownListEl = document.getElementById('breakdownList');
+        const screensSlider = document.getElementById('screens');
+        const screensValueEl = document.getElementById('screensValue');
+
+        // Update screens value display
+        screensSlider.addEventListener('input', function() {
+            screensValueEl.textContent = this.value;
+            calculateTotal();
+        });
+
+        // Calculate total on any input change
+        form.addEventListener('change', calculateTotal);
+        form.addEventListener('input', calculateTotal);
+
+        function calculateTotal() {
+            let total = 0;
+            const breakdown = {};
+
+            // Framework (Base Cost)
+            const framework = document.querySelector('input[name="framework"]:checked');
+            if (framework) {
+                const cost = parseInt(framework.dataset.cost);
+                total += cost;
+                const frameworkName = framework.nextElementSibling.querySelector('.option-name').textContent;
+                breakdown['Base Development'] = `$${cost.toLocaleString()}`;
+            }
+
+            // Platform
+            const platform = document.querySelector('input[name="platform"]:checked');
+            if (platform) {
+                const cost = parseInt(platform.dataset.cost);
+                if (cost > 0) {
+                    total += cost;
+                    breakdown['Dual Platform'] = `$${cost.toLocaleString()}`;
+                }
+            }
+
+            // Additional Screens
+            const screens = parseInt(screensSlider.value);
+            if (screens > 0) {
+                const screensCost = screens * parseInt(screensSlider.dataset.costPer);
+                total += screensCost;
+                breakdown[`Extra Screens (${screens})`] = `$${screensCost.toLocaleString()}`;
+            }
+
+            // All Add-ons (checkboxes)
+            const addons = document.querySelectorAll('input[name="addons"]:checked');
+            addons.forEach(addon => {
+                const cost = parseInt(addon.dataset.cost);
+                const name = addon.nextElementSibling.querySelector('.option-name').textContent;
+                total += cost;
+                breakdown[name] = `$${cost.toLocaleString()}`;
+            });
+
+            // Update display
+            const min = Math.floor(total * 0.95);
+            const max = Math.floor(total * 1.15);
+
+            totalCostEl.textContent = `$${total.toLocaleString()}`;
+            totalRangeEl.textContent = `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+
+            // Update breakdown
+            breakdownListEl.innerHTML = '';
+            for (const [name, cost] of Object.entries(breakdown)) {
+                const item = document.createElement('div');
+                item.className = 'breakdown-item';
+                item.innerHTML = `
+                    <span class="breakdown-name">${name}</span>
+                    <span class="breakdown-cost">${cost}</span>
+                `;
+                breakdownListEl.appendChild(item);
+            }
+        }
+
+        // CTA Button Handler
+        function handleGetQuote() {
+            const total = totalCostEl.textContent;
+            const message = `I'm interested in getting a detailed quote for a mobile app. The estimated cost from your calculator is ${total}.`;
+            
+            // Option 1: Open email client
+            window.location.href = `mailto:info@alphasolutions.online?subject=Mobile App Quote Request&body=${encodeURIComponent(message)}`;
+            
+            // Option 2: Could also link to contact form
+            // window.location.href = 'https://alphasolutions.online/contact?quote=' + encodeURIComponent(total);
+        }
+
+        // Initial calculation
+        calculateTotal();
+    </script>
+</body>
+</html>
